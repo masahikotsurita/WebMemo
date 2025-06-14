@@ -137,8 +137,8 @@
 
   function handleKey(e){
     const key = e.key;
-    if(key==='j'){ move(-1); }
-    else if(key==='k'){ move(1); }
+    if(key==='j'){ prev(); }
+    else if(key==='k'){ next(); }
     else if(key==='o'){ toggle('learned'); }
     else if(key==='n'){ toggle('hide'); }
     else if(key==='a'){ toggle('review'); }
@@ -148,11 +148,27 @@
     else { showAnswer = !showAnswer; displayCard(); }
   }
 
-  function move(delta){
-    idx += delta;
-    if(idx < 0) idx = 0;
-    if(idx >= currentTest.cards.length) idx = currentTest.cards.length - 1;
-    showAnswer = false;
+  function prev(){
+    if(showAnswer){
+      showAnswer = false;
+    }else{
+      if(idx > 0){
+        idx--;
+        showAnswer = true;
+      }
+    }
+    displayCard();
+  }
+
+  function next(){
+    if(!showAnswer){
+      showAnswer = true;
+    }else{
+      if(idx < currentTest.cards.length - 1){
+        idx++;
+        showAnswer = false;
+      }
+    }
     displayCard();
   }
 
@@ -220,6 +236,16 @@
         simpleShowAnswer = false;
       }else{
         simpleShowAnswer = true;
+      }
+      displaySimpleCard();
+    }else if(e.key === 'j'){
+      if(simpleShowAnswer){
+        simpleShowAnswer = false;
+      }else{
+        if(simpleIdx > 0){
+          simpleIdx--;
+          simpleShowAnswer = true;
+        }
       }
       displaySimpleCard();
     }else if(e.key === 'q'){
