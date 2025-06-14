@@ -20,6 +20,14 @@
     reader.readAsText(file);
   });
 
+  document.getElementById('runTestBtn').addEventListener('click', () => {
+    const file = document.getElementById('csvInput').files[0];
+    if(!file) return alert('CSVを指定してください');
+    const reader = new FileReader();
+    reader.onload = e => startSimpleTest(parseCSVForTest(e.target.result));
+    reader.readAsText(file);
+  });
+
   function loadTests(){
     try { return JSON.parse(localStorage.getItem(storageKey)) || []; }
     catch(e){ return []; }
@@ -39,6 +47,20 @@
     for(const line of lines){
       const [q,a,m,learned,hide,review] = line.split(',');
       cards.push({q,a,m,status:{learned:learned==='true',hide:hide==='true',review:review==='true'}});
+    }
+    return cards;
+  }
+
+  function parseCSVForTest(text){
+    const lines = text.trim().split(/\r?\n/);
+    if(lines.length < 2) return [];
+    const headers = lines[0].split(',');
+    const qIdx = headers.indexOf('問題');
+    const aIdx = headers.indexOf('答え');
+    const cards = [];
+    for(let i=1;i<lines.length;i++){
+      const cols = lines[i].split(',');
+      cards.push({q: cols[qIdx] || '', a: cols[aIdx] || ''});
     }
     return cards;
   }
@@ -163,5 +185,50 @@
       if(t.children && addSubtest(t.children, id, sub)) return true;
     }
     return false;
+  }
+
+  // Simple Test Mode ----------------------------------
+  let simpleCards = [];
+  let simpleIdx = 0;
+  let simpleShowAnswer = false;
+
+  function startSimpleTest(cards){
+    if(!cards.length) return alert('カードがありません');
+    simpleCards = cards;
+    simpleIdx = 0;
+    simpleShowAnswer = false;
+    memoDiv.textContent = '';
+    statusDiv.textContent = '';
+    area.classList.remove('hidden');
+    displaySimpleCard();
+    document.addEventListener('keydown', handleSimpleKey);
+  }
+
+  function displaySimpleCard(){
+    const c = simpleCards[simpleIdx];
+    cardDiv.textContent = simpleShowAnswer ? c.a : c.q;
+  }
+
+  function handleSimpleKey(e){
+    if(e.key === 'k'){
+      if(simpleShowAnswer){
+        simpleIdx++;
+        if(simpleIdx >= simpleCards.length){
+          endSimpleTest();
+          return;
+        }
+        simpleShowAnswer = false;
+      }else{
+        simpleShowAnswer = true;
+      }
+      displaySimpleCard();
+    }else if(e.key === 'q'){
+      endSimpleTest();
+    }
+  }
+
+  function endSimpleTest(){
+    document.removeEventListener('keydown', handleSimpleKey);
+    area.classList.add('hidden');
   }
 })();
