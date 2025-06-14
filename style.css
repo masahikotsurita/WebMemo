@@ -1,0 +1,8 @@
+body { font-family: sans-serif; margin: 20px; }
+.hidden { display: none; }
+#card { font-size: 24px; margin-top: 20px; }
+#memo { color: #666; margin-top: 10px; }
+#status { margin-top: 10px; }
+ul { list-style-type: none; padding-left: 20px; }
+li { margin-bottom: 5px; }
+button { margin-left: 5px; }
