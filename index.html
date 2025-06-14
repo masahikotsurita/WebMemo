@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>WebMemo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>WebMemo</h1>
+  <section id="add">
+    <h2>テスト追加</h2>
+    <input type="text" id="testName" placeholder="テスト名">
+    <input type="file" id="csvInput" accept=".csv">
+    <button id="addTestBtn">追加</button>
+  </section>
+  <section id="list">
+    <h2>テスト一覧</h2>
+    <ul id="testList"></ul>
+  </section>
+
+  <section id="testArea" class="hidden">
+    <div id="card"></div>
+    <div id="memo"></div>
+    <div id="status"></div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
